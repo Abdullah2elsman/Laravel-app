@@ -47,10 +47,27 @@
                     </div>
 
                     <div class="p-6 pt-0">
-                        <a href="/posts/{{ $post['id'] }}"
-                            class="inline-block w-full text-center rounded-xl {{ $post['color'] ?? 'bg-gray-800' }} py-3 text-sm font-bold uppercase text-white shadow-lg transition-all hover:scale-[1.02]">
-                            Read more
-                        </a>
+                        <div class="flex flex-col gap-2">
+                            <a href="/posts/{{ $post['id'] }}"
+                                class="inline-block w-full text-center rounded-xl {{ $post['color'] ?? 'bg-gray-800' }} py-3 text-sm font-bold uppercase text-white shadow-lg transition-all hover:scale-[1.02] mb-2">
+                                Read more
+                            </a>
+                            <div class="flex gap-2">
+                                <a href="/posts/{{ $post['id'] }}/edit"
+                                    class="flex-1 text-center rounded-xl bg-emerald-600 py-2 text-sm font-bold uppercase text-white shadow hover:bg-emerald-700 transition-all">
+                                    Edit
+                                </a>
+                                <form action="/posts/{{ $post['id'] }}" method="POST" class="flex-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                        onclick="return confirm('Are you sure you want to delete this post?');"
+                                        class="w-full rounded-xl bg-red-600 py-2 text-sm font-bold uppercase text-white shadow hover:bg-red-700 transition-all">
+                                        Delete
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @endforeach

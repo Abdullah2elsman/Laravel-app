@@ -21,8 +21,9 @@
                 <p class="text-blue-100 text-sm">Share your thoughts with the world</p>
             </div>
 
-            <form action="/posts/create" method="POST" class="p-8 space-y-6">
-                @csrf <div class="relative h-11 w-full min-w-[200px]">
+            <form action="{{ route('posts.store') }}" method="POST" class="p-8 space-y-6">
+                @csrf
+                <div class="relative h-11 w-full min-w-[200px]">
                     <input name="title" required type="text"
                         class="peer h-full w-full rounded-md border border-blue-gray-200 bg-transparent px-3 py-3 font-sans text-sm font-normal text-blue-gray-700 outline outline-0 transition-all placeholder-shown:border border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-blue-500 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                         placeholder=" " />
