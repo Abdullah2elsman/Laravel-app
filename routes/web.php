@@ -9,8 +9,4 @@ Route::get('/', function () {
 
 Route::resource('posts',PostController::class);
 
-
-Route::get('/clear', function () {
-    Session::forget('user_posts');
-    return "Sessions Cleared!";
-});
+Route::patch('/posts/{id}/restore', [PostController::class, 'restore']);

@@ -49,7 +49,7 @@
                     <div class="p-6 pt-0">
                         <div class="flex flex-col gap-2">
                             <a href="/posts/{{ $post['id'] }}"
-                                class="inline-block w-full text-center rounded-xl {{ $post['color'] ?? 'bg-gray-800' }} py-3 text-sm font-bold uppercase text-white shadow-lg transition-all hover:scale-[1.02] mb-2">
+                                class="inline-block w-full text-center rounded-xl bg-blue-800 py-3 text-sm font-bold uppercase text-white shadow-lg transition-all hover:scale-[1.02] mb-2">
                                 Read more
                             </a>
                             <div class="flex gap-2">
@@ -72,6 +72,10 @@
                 </div>
             @endforeach
         </div>
+
+    </div>
+    <div class="mt-4">
+        {{ $posts->links() }}
     </div>
 </body>
 
