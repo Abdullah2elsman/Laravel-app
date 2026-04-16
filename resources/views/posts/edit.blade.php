@@ -25,8 +25,8 @@
                     required>
             </div>
             <div class="mb-6">
-                <label class="block mb-2 text-sm font-bold text-gray-700">Image URL</label>
-                <input type="text" name="image" value="{{ old('image', $post['image']) }}"
+                <label class="block mb-2 text-sm font-bold text-gray-700">Image Upload</label>
+                <input type="file" name="image" accept="image/*"
                     class="w-full px-4 py-2 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-600">
             </div>
             <div class="mb-6">

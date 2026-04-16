@@ -33,7 +33,7 @@
                 <div
                     class="relative flex w-full max-w-[22rem] flex-col rounded-2xl bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
                     <div class="relative mx-4 -mt-6 h-48 overflow-hidden rounded-2xl shadow-lg group">
-                        <img src="{{ $post->image }}"
+                        <img src="{{ $post->image && str_starts_with($post->image, 'http') ? $post->image : asset('storage/' . $post->image) }}"
                             onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800'"
                             class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>

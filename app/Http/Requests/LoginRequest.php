@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePostRequest extends FormRequest
+class LoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return false;
     }
 
     /**
@@ -23,15 +23,7 @@ class StorePostRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'title' => "unique:posts|required|min:5",
-            'image' => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048",
-            'desc' => "required|min:10",
-        ];
-    }
-
-    public function messages(): array {
-        return [
-            'title.required' => 'the title required please enter it',
+            //
         ];
     }
 }

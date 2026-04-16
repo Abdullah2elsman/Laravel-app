@@ -12,7 +12,7 @@
         <a href="/posts" class="text-blue-600 hover:underline mb-6 inline-block">← Back to all posts</a>
 
         <div class="bg-white rounded-3xl shadow-2xl overflow-hidden">
-            <img src="{{ $post['image'] }}" class="w-full h-[400px] object-cover" alt="">
+            <img src="{{ $post['image'] && str_starts_with($post['image'], 'http') ? $post['image'] : asset('storage/' . $post['image']) }}" class="w-full h-[400px] object-cover" alt="">
             
             <div class="p-10">
                 <h1 class="text-4xl font-black text-gray-900 mb-6">{{ $post['title'] }}</h1>

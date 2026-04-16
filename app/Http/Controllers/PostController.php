@@ -2,10 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Auth\LoginRequest;
 use App\Http\Requests\StorePostRequest;
+use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
@@ -23,8 +29,13 @@ class PostController extends Controller
     public function store(StorePostRequest $request)
     {
 
-        $data = $request->all();
-        $data['user_id'] = 1;
+        $data = $request->except('image');
+        $data['user_id'] = Auth::id();
+
+        if ($request->hasFile('image'))
+        {
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
 
         Post::create($data);
 
@@ -49,17 +60,35 @@ class PostController extends Controller
         $validated = $request->validate([
             'title' => "required|max:255",
             'desc' => "required",
-            'image' => "nullable"
+            'image' => "nullable|image|mimes:jpeg,png,jpg,gif|max:2048"
         ]);
 
         $post = Post::findOrFail($id);
-        $post->update($validated);
+
+        $data = $validated;
+        unset($data['image']);
+
+        if ($request->hasFile('image'))
+        {
+            if ($post->image && Storage::disk('public')->exists($post->image))
+            {
+                Storage::disk('public')->delete($post->image);
+            }
+            $data['image'] = $request->file('image')->store('posts', 'public');
+        }
+
+        $post->update($data);
         return redirect('/posts');
     }
 
     public function destroy($id)
     {
         $post = Post::findOrFail($id);
+        if ($post->image && Storage::disk('public')->exists($post->image))
+        {
+            Storage::disk('public')->delete($post->image);
+            $post->image = null;
+        }
         $post->is_deleted = 1;
         $post->save();
         return redirect('/posts');
@@ -68,9 +97,42 @@ class PostController extends Controller
     public function restore($id)
     {
         $post = Post::findOrFail($id);
-        $post->is_deleted = 0; 
+        $post->is_deleted = 0;
         $post->save();
 
         return redirect('/posts')->with('success', 'Post restored successfully!');
+    }
+
+    public function showPosts(){
+        $posts = Post::all();
+        return PostResource::collection($posts);
+    }
+
+    public function showPost($id){
+        $post = Post::find($id);
+
+        return new PostResource($post);
+    }
+    
+    public function storePost(StorePostRequest $request){
+        $data = $request->validated();
+
+        $data['user_id'] = Auth::id();
+
+        $post = Post::create($data);
+
+        return new PostResource($post);
+    }
+
+    public function sanctumLogin(LoginRequest $request){
+        $user = User::where('email', $request->email)->first();
+
+        if (! $user || ! Hash::check($request->password, $user->password)) {
+            throw ValidationException::withMessages([
+                'email' => ['The data is wrong.'],
+            ]);
+        }
+
+        return $user->createToken($request->device_name)->plainTextToken;
     }
 }

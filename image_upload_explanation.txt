@@ -1,0 +1,61 @@
+How Images are Uploaded and Saved in the Laravel Application
+
+Below is a detailed explanation of how your image upload feature works, what files were edited, and how Laravel handles the file saving underneath the hood.
+
+---
+
+### 1. The Controller Logic (app/Http/Controllers/PostController.php)
+
+In your PostController, we added logic inside the store(), update(), and destroy() methods.
+
+When someone uploads a file on the form and the data hits the store() logic:
+```php
+if ($request->hasFile('image')) {
+    $data['image'] = $request->file('image')->store('posts', 'public');
+}
+```
+
+What does this `store('posts', 'public')` command do?
+1. It validates that the physical payload sent is actually an uploaded file.
+2. It secures the file. Instead of keeping the original filename (which could cause naming collisions or security risks like 'virus.exe.jpg'), Laravel automatically generates a completely randomized, unique hash for the file name (e.g. `nB719xhs210LkA21.jpg`).
+3. It takes this hashed file and permanently saves it onto your server's hardware inside the directory `storage/app/public/posts/`. 
+4. Finally, the function returns the new relative path of the file as a string. The string looks like this: `"posts/nB719xhs210LkA21.jpg"`. 
+
+This returned string is intercepted by `$data['image']` and then passed into `$post->create()`, mapping the string path directly into your MySQL database's `image` column.
+
+So your Database does NOT hold the physical image! Your database just holds a lightweight string pointer indicating where the image lives on the server.
+
+### 2. File Updates and Deletions
+
+In the `update()` method, when an image is swapped, we run this check:
+```php
+if ($post->image && Storage::disk('public')->exists($post->image)) {
+    Storage::disk('public')->delete($post->image);
+}
+```
+Because the old image path is in the database (`$post->image`), we instruct Laravel's `Storage` helper to go into the `public` disk, locate that exact string path, and physically delete the old image before saving the new upload. This ensures your server's hard drive doesn't run out of space over time. 
+
+We apply that same deletion logic in the `destroy($id)` method so that deleting a post gets rid of its image entirely.
+
+### 3. The Database Setup (app/Models/Post.php)
+
+In the Model, we added an Eloquent model Event Listener called `booted()`:
+```php
+static::deleting(function ($post) { ...
+```
+This is a failsafe. If someone deletes a Post model using `$post->delete()` without going through the controller, the Model will catch the event before the Database row is destroyed, and intercept it to clean up the physical file on the server.
+
+### 4. Displaying the Displaying (resources/views/posts/)
+
+Since the images are saved in `storage/app/public/posts/`, they are completely blocked off from regular internet traffic (browsers can only access the standard `public/` directory).
+
+To fix this, we ran the command:
+`php artisan storage:link`
+
+This built a symbolic link (a wormhole) from the public-facing `public/storage` folder directly into the locked `storage/app/public/` folder. 
+
+Finally, in your views like `post.blade.php`, we display the stored image using the `asset()` helper:
+`<img src="{{ asset('storage/' . $post->image) }}" />`
+
+What this does is grab the string from your database `"posts/nB719xhs210LkA21.jpg"`, append the storage endpoint in front of it, and generate a full safe URL that the user's browser understands:
+`http://yoursite.com/storage/posts/nB719xhs210LkA21.jpg`.
