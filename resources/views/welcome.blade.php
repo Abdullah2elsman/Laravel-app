@@ -11,7 +11,7 @@
             </div>
 
             <div class="hidden md:flex space-x-8 space-x-reverse">
-                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Home</a>
+                <a href="#" class="text-gray-600 hover:text-blue-600 transition">Dashboard</a>
                 <a href="/posts" class="text-gray-600 hover:text-blue-600 transition">Posts</a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition">About<a>
                 <a href="#" class="text-gray-600 hover:text-blue-600 transition">Contact Us</a>
