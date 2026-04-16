@@ -31,7 +31,7 @@ class StorePostRequest extends FormRequest
 
     public function messages(): array {
         return [
-            'title.required' => 'fuck you',
+            'title.required' => 'the title required please enter it',
         ];
     }
 }
