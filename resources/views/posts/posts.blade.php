@@ -33,31 +33,37 @@
                 <div
                     class="relative flex w-full max-w-[22rem] flex-col rounded-2xl bg-white shadow-xl hover:shadow-2xl transition-shadow duration-300">
                     <div class="relative mx-4 -mt-6 h-48 overflow-hidden rounded-2xl shadow-lg group">
-                        <img src="{{ $post['image'] }}"
+                        <img src="{{ $post->image }}"
                             onerror="this.src='https://images.unsplash.com/photo-1432821596592-e2c18b78144f?w=800'"
                             class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110" />
                     </div>
 
                     <div class="p-6 text-left">
                         <h5 class="mb-3 block text-xl font-bold text-gray-900 lowercase">
-                            {{ $post['title'] }}
+                            {{ $post->title }}
                         </h5>
                         <p class="text-sm font-normal text-gray-600 leading-relaxed">
-                            {{ Str::limit($post['desc'], 100) }} </p>
+                            {{ Str::limit($post->desc, 100) }} </p>
+                    </div>
+
+                    <div class="p-6 text-left">
+                        <h5>
+                            Created By: {{ $post->user->name }}
+                        </h5>
                     </div>
 
                     <div class="p-6 pt-0">
                         <div class="flex flex-col gap-2">
-                            <a href="/posts/{{ $post['id'] }}"
+                            <a href="/posts/{{ $post->id }}"
                                 class="inline-block w-full text-center rounded-xl bg-blue-800 py-3 text-sm font-bold uppercase text-white shadow-lg transition-all hover:scale-[1.02] mb-2">
                                 Read more
                             </a>
                             <div class="flex gap-2">
-                                <a href="/posts/{{ $post['id'] }}/edit"
+                                <a href="/posts/{{ $post->id }}/edit"
                                     class="flex-1 text-center rounded-xl bg-emerald-600 py-2 text-sm font-bold uppercase text-white shadow hover:bg-emerald-700 transition-all">
                                     Edit
                                 </a>
-                                <form action="/posts/{{ $post['id'] }}" method="POST" class="flex-1">
+                                <form action="/posts/{{ $post->id }}" method="POST" class="flex-1">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit"

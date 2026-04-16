@@ -67,6 +67,15 @@
                 </div>
             </form>
         </div>
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
     </div>
 
     <script src="https://unpkg.com/@material-tailwind/html@latest/scripts/ripple.js"></script>

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePostRequest;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
@@ -19,15 +20,14 @@ class PostController extends Controller
         return view('posts.create');
     }
 
-    public function store(Request $request)
+    public function store(StorePostRequest $request)
     {
-        $validated = $request->validate([
-            'title' => "unique|required|min:5",
-            'image' => "nullable",
-            'desc' => "required|min:10"
-        ]);
 
-        Post::create($validated);
+        $data = $request->all();
+        $data['user_id'] = 1;
+
+        Post::create($data);
+
         return redirect('/posts');
     }
 
