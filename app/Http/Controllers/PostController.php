@@ -103,36 +103,5 @@ class PostController extends Controller
         return redirect('/posts')->with('success', 'Post restored successfully!');
     }
 
-    public function showPosts(){
-        $posts = Post::all();
-        return PostResource::collection($posts);
-    }
-
-    public function showPost($id){
-        $post = Post::find($id);
-
-        return new PostResource($post);
-    }
     
-    public function storePost(StorePostRequest $request){
-        $data = $request->validated();
-
-        $data['user_id'] = Auth::id();
-
-        $post = Post::create($data);
-
-        return new PostResource($post);
-    }
-
-    public function sanctumLogin(LoginRequest $request){
-        $user = User::where('email', $request->email)->first();
-
-        if (! $user || ! Hash::check($request->password, $user->password)) {
-            throw ValidationException::withMessages([
-                'email' => ['The data is wrong.'],
-            ]);
-        }
-
-        return $user->createToken($request->device_name)->plainTextToken;
-    }
 }
